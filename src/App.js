@@ -1,52 +1,23 @@
-import { useEffect } from "react";
-import {
-  Routes,
-  Route,
-  useNavigationType,
-  useLocation,
-} from "react-router-dom";
-import HP from "./pages/HP";
+import {Route, Routes} from "react-router-dom";
+import Home from "./pages/home/Home";
+import Header from "./components/header/Header";
+import FooterNav from "./components/footer/FooterNav";
+import Profile from "./pages/profile/Profile";
 
 function App() {
-  const action = useNavigationType();
-  const location = useLocation();
-  const pathname = location.pathname;
 
-  useEffect(() => {
-    if (action !== "POP") {
-      window.scrollTo(0, 0);
-    }
-  }, [action, pathname]);
-
-  useEffect(() => {
-    let title = "";
-    let metaDescription = "";
-
-    switch (pathname) {
-      case "/":
-        title = "";
-        metaDescription = "";
-        break;
-    }
-
-    if (title) {
-      document.title = title;
-    }
-
-    if (metaDescription) {
-      const metaDescriptionTag = document.querySelector(
-        'head > meta[name="description"]'
-      );
-      if (metaDescriptionTag) {
-        metaDescriptionTag.content = metaDescription;
-      }
-    }
-  }, [pathname]);
-
-  return (
-    <Routes>
-      <Route path="/" element={<HP />} />
-    </Routes>
-  );
+    return (
+        <div className="App">
+            <Header/>
+            <div className="frameWrapper">
+                <Routes>
+                    <Route path="/" element={<Home/>}/>
+                    <Route path="/home" element={<Profile/>}/>
+                </Routes>
+            </div>
+            <FooterNav/>
+        </div>
+    );
 }
+
 export default App;
