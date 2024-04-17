@@ -1,0 +1,50 @@
+.frameChild {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  margin: 0 !important;
+  top: -1px;
+  left: -6px;
+  background-color: var(--color-gold);
+  z-index: 1;
+}
+.div {
+  flex: 1;
+  position: relative;
+  z-index: 2;
+}
+.rectangleParent {
+  align-self: stretch;
+  flex-direction: row;
+  position: relative;
+}
+.footerParent,
+.frameWrapper,
+.rectangleParent {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+.frameWrapper {
+  width: 31px;
+  margin: 0 !important;
+  position: absolute;
+  top: 9px;
+  right: 4px;
+  flex-direction: column;
+  padding: var(--padding-12xs) 0 0 var(--padding-7xs);
+  box-sizing: border-box;
+  text-align: left;
+  font-size: var(--font-size-xl);
+  font-family: var(--font-inter);
+}
+.footerParent {
+  align-self: stretch;
+  flex-direction: row;
+  position: relative;
+  max-width: 100%;
+  text-align: center;
+  font-size: var(--font-size-xs);
+  color: var(--color-black);
+  font-family: var(--font-roboto);
+}
