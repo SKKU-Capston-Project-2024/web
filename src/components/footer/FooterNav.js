@@ -3,7 +3,6 @@ import {useNavigate} from "react-router-dom";
 
 const FooterNav = ({}) => {
 
-
     const home = "/home.svg"
 
     const navigate = useNavigate();
