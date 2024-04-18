@@ -1,21 +1,8 @@
-import {useMemo} from "react";
 import styles from "./Footer.module.css";
 import {useNavigate} from "react-router-dom";
 
-const FooterNav = ({
-                       propFlex,
-                       propGap,
-                       propAlignSelf,
-                       propDebugCommit,
-                   }) => {
-    const footerStyle = useMemo(() => {
-        return {
-            flex: propFlex,
-            gap: propGap,
-            alignSelf: propAlignSelf,
-            debugCommit: propDebugCommit,
-        };
-    }, [propFlex, propGap, propAlignSelf, propDebugCommit]);
+const FooterNav = ({}) => {
+
 
     const home = "/home.svg"
 
