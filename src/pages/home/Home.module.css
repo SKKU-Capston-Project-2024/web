@@ -29,7 +29,7 @@ h1 {
 }
 
 .frameItem {
-    width: 30px;
+    width: 31px;
     height: 3px;
     position: relative;
     border-radius: var(--br-8xs);
