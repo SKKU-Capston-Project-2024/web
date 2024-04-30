@@ -12,7 +12,8 @@ function App() {
             <div className="frameWrapper">
                 <Routes>
                     <Route path="/" element={<Home/>}/>
-                    <Route path="/home" element={<Profile/>}/>
+                    <Route path="/home" element={<Home/>}/>
+                    <Route path="/profile" element={<Profile/>}/>
                 </Routes>
             </div> 
             <FooterNav/>
