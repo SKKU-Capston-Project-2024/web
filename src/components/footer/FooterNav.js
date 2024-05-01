@@ -15,15 +15,19 @@ const FooterNav = ({}) => {
         navigate("/profile");
     }
 
+    function navigateeditProfile() {
+        navigate("/editProfile");
+    }
+
     return (
         <nav className={styles.footer}>
             <div className={styles.footerItemContainer} onClick={navigateHome}>
                 <img loading="lazy" alt="" src={home}/>
                 <span className={styles.footerItemDesc}>홈</span>
             </div>
-            <div className={styles.footerItemContainer}>
+            <div className={styles.footerItemContainer} onClick={navigateeditProfile}>
                 <img loading="lazy" alt="" src={home}/>
-                <span className={styles.footerItemDesc}>메뉴</span>
+                <span className={styles.footerItemDesc}>프로필수정</span>
 
             </div>
             <div className={styles.footerItemContainer}>
