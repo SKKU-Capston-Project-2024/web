@@ -9,8 +9,10 @@ const ProfileHeader = () => {
                     수정
                 </button>
             </div>
-            <div className={styles.profileContainerSecond}></div>
-            <div className={styles.profileContainerThird}></div>
+            <div className={styles.profileContainerSecond}>
+                <img src="/circleprofile.svg" alt="profile" className={styles.profilePhoto}/>
+            </div>
+            <div className={styles.profileContainerThird}>이름과 바이오</div>
             
         </header>
     );
