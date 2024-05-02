@@ -5,22 +5,24 @@ import Header from "./components/header/Header";
 import FooterNav from "./components/footer/FooterNav";
 import Profile from "./pages/profile/Profile";
 import EditProfile from "./pages/editProfile/EditProfile";
+import UserContextProvider from "./context/UserContext";
 
 function App() {
 
     return (
-        <div className="App">
-            <Header isLogin="true"/>
-            <div className="frameWrapper">
-                <Routes>
-                    <Route path="/" element={<Home/>}/>
-                    <Route path="/home" element={<Home/>}/>
-                    <Route path="/profile" element={<Profile/>}/>
-                    <Route path="/editProfile" element={<EditProfile/>}/>
-                </Routes>
+        <UserContextProvider>
+            <div className="App">
+                <Header isLogin="true"/>
+                <div className="frameWrapper">
+                    <Routes>
+                        <Route path="/" element={<Home/>}/>
+                        <Route path="/profile" element={<Profile/>}/>
+                        <Route path="/editProfile" element={<EditProfile/>}/>
+                    </Routes>
+                </div>
+                <FooterNav/>
             </div>
-            <FooterNav/>
-        </div>
+        </UserContextProvider>
     );
 }
 

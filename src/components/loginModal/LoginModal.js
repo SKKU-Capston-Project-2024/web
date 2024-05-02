@@ -3,11 +3,11 @@ import styles from './LoginModal.module.css';
 const LoginModal = () => {
 
     const moveToKakaoLogin = () => {
-        document.location.href = `${process.env.API_HOST}/auth/kakao-login?redirect=${document.location.href}`
+        document.location.href = `${process.env.REACT_APP_API_HOST}/oauth2/authorization/kakao`
     }
 
     const moveToGoogleLogin = () => {
-        document.location.href = `${process.env.API_HOST}/auth/google-login?redirect=${document.location.href}`
+        document.location.href = `${process.env.REACT_APP_API_HOST}/oauth2/authorization/google`
     }
 
 
@@ -19,12 +19,12 @@ const LoginModal = () => {
                 </div>
                 <div className={styles.loginItemContainer}>
                     <div className={styles.loginItem} onClick={moveToKakaoLogin}>
-                        <img className={styles.loginItemIcon} alt="카카오"></img>
-                        <div>카카오로 로그인</div>
+                        <img className={styles.loginItemIcon} alt="카카오" src="/kakao-icon.svg"></img>
+                        <div>카카오로 로그인하기</div>
                     </div>
                     <div className={styles.loginItemIcon} className={styles.loginItem} onClick={moveToGoogleLogin}>
-                        <img alt="구글"></img>
-                        <div>구글로 로그인</div>
+                        <img alt="구글" src="/google-icon.svg" className={styles.loginItemIcon}></img>
+                        <div>구글로 로그인하기</div>
                     </div>
                 </div>
             </dialog>
