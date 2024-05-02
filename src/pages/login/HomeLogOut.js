@@ -4,7 +4,6 @@ import ReviewPreview from "../../components/reviewPreview/ReviewPreview";
 import PlaylistPreview from "../../components/playlistPreview/PlaylistPreview";
 import ToggleFilter from "../../components/toggleFilter/ToggleFilter";
 import TrackReview from "../../components/trackReview/TrackReview";
-import Modal from './modal';
 
 
 const HomeLogOut = () => {
@@ -28,16 +27,6 @@ const HomeLogOut = () => {
                 <button onClick={handleLogin}>Log In</button>
                 <button onClick={handleSignUp}>Sign Up</button>
             </div>
-            {showLoginModal && (
-                <Modal onClose={() => setShowLoginModal(false)}>
-                    <h2>Login</h2>
-                </Modal>
-            )}
-            {showSignUpModal && (
-                <Modal onClose={() => setShowSignUpModal(false)}>
-                    <h2>Sign Up</h2>
-                </Modal>
-            )}
             <section className={styles.homeSection}>
                 <div className={styles.sectionTitle}>팔로워들의 최근 업로드</div>
                 <div className="verticalScroll">
