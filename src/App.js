@@ -9,7 +9,7 @@ function App() {
 
     return (
         <div className="App">
-            <Header/>
+            <Header isLogin="true"/>
             <div className="frameWrapper">
                 <Routes>
                     <Route path="/" element={<Home/>}/>
@@ -17,7 +17,7 @@ function App() {
                     <Route path="/profile" element={<Profile/>}/>
                     <Route path="/editProfile" element={<EditProfile/>}/>
                 </Routes>
-            </div> 
+            </div>
             <FooterNav/>
         </div>
     );
