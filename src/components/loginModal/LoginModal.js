@@ -1,4 +1,5 @@
 import styles from './LoginModal.module.css';
+import {useEffect, useRef} from "react";
 
 const LoginModal = () => {
 
@@ -10,10 +11,21 @@ const LoginModal = () => {
         document.location.href = `${process.env.REACT_APP_API_HOST}/oauth2/authorization/google`
     }
 
+    const modal = useRef();
+
+    const handleBackdropClick = (event) => {
+        if (event.target === modal.current) {
+            modal.current.close();
+        }
+    }
+
+    useEffect(() => {
+        document.addEventListener('click', handleBackdropClick);
+    }, []);
 
     return (
         <div>
-            <dialog id="loginModal" className={styles.loginModal}>
+            <dialog id="loginModal" className={styles.loginModal} ref={modal}>
                 <div className={styles.loginHeader}>
                     로그인하기
                 </div>
