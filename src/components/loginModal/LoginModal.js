@@ -35,7 +35,7 @@ const LoginModal = () => {
                         <div>카카오로 로그인하기</div>
                     </div>
                     <div className={styles.loginItemIcon} className={styles.loginItem} onClick={moveToGoogleLogin}>
-                        <img alt="구글" src="/google-icon.svg" className={styles.loginItemIcon}></img>
+                        <img alt="구글" src="/google-icon.png" className={styles.loginItemIcon}></img>
                         <div>구글로 로그인하기</div>
                     </div>
                 </div>
