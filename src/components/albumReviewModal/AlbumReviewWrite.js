@@ -10,7 +10,7 @@ const AlbumReviewWrite = ({ reviewWriteModalOpen, setReviewWriteModalOpen, revie
         }}>
             <div className={styles.modalContent} onClick={e => e.stopPropagation()}>
                 <div className={styles.modalHeader}>
-                    <p>앨범리뷰작성하기</p>
+                    <p>앨범리뷰 작성하기</p>
                     <p><button className={styles.modalCloseBtn} onClick={() => setReviewWriteModalOpen(false)}>
                     닫기
                     </button></p>
