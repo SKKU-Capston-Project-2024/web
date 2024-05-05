@@ -6,6 +6,7 @@ import FooterNav from "./components/footer/FooterNav";
 import Profile from "./pages/profile/Profile";
 import EditProfile from "./pages/editProfile/EditProfile";
 import UserContextProvider from "./context/UserContext";
+import Search from "./pages/search/Search";
 
 function App() {
 
@@ -18,6 +19,7 @@ function App() {
                         <Route path="/" element={<Home/>}/>
                         <Route path="/profile" element={<Profile/>}/>
                         <Route path="/editProfile" element={<EditProfile/>}/>
+                        <Route path="/search" element={<Search/>}/>
                     </Routes>
                 </div>
                 <FooterNav/>

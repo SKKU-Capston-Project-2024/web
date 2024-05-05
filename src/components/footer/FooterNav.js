@@ -19,6 +19,10 @@ const FooterNav = ({}) => {
         navigate("/editProfile");
     }
 
+    function navigateSearch() {
+        navigate("/search");
+    }
+
     return (
         <nav className={styles.footer}>
             <div className={styles.footerItemContainer} onClick={navigateHome}>
@@ -30,7 +34,7 @@ const FooterNav = ({}) => {
                 <span className={styles.footerItemDesc}>프로필수정</span>
 
             </div>
-            <div className={styles.footerItemContainer}>
+            <div className={styles.footerItemContainer} onClick={navigateSearch}>
                 <img loading="lazy" alt="" src={home}/>
                 <span className={styles.footerItemDesc}>찾기</span>
             </div>
