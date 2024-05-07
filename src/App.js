@@ -8,6 +8,7 @@ import EditProfile from "./pages/editProfile/EditProfile";
 import UserContextProvider from "./context/UserContext";
 import Search from "./pages/search/Search";
 import AlbumDetail from "./pages/albumDetail/AlbumDetail";
+import ReviewDetail from "./pages/reviewDetail/ReviewDetail";
 
 function App() {
 
@@ -22,6 +23,7 @@ function App() {
                         <Route path="/editProfile" element={<EditProfile/>}/>
                         <Route path="/search" element={<Search/>}/>
                         <Route path="/albumDetail" element={<AlbumDetail/>}/>
+                        <Route path="/reviewDetail" element={<ReviewDetail/>}/>
                     </Routes>
                 </div>
                 <FooterNav/>
