@@ -21,7 +21,7 @@ const MainPage = () => {
                 {/* Repeat for other tracks */}
             </div>
 
-            <h2>댓글남</h2>
+            <h2>탑리뷰</h2>
             <div className="userReview">
                 <img src="user-profile.jpg" alt="User profile" className="userImage"/>
                 <div className="reviewContent">
