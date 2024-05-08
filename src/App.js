@@ -7,6 +7,7 @@ import Profile from "./pages/profile/Profile";
 import EditProfile from "./pages/editProfile/EditProfile";
 import UserContextProvider from "./context/UserContext";
 import Search from "./pages/search/Search";
+import SearchResults from "./pages/search/SearchResults";
 import AlbumDetail from "./pages/albumDetail/AlbumDetail";
 import ReviewDetail from "./pages/reviewDetail/ReviewDetail";
 
@@ -21,8 +22,8 @@ function App() {
                         <Route path="/" element={<Home/>}/>
                         <Route path="/profile" element={<Profile/>}/>
                         <Route path="/editProfile" element={<EditProfile/>}/>
-                        <Route path="/search" element={<Search/>}/>
-                        <Route path="/albumDetail" element={<AlbumDetail/>}/>
+                        <Route path="/search" element={<SearchResults/>}/>
+                        <Route path="/albumDetail/:id" element={<AlbumDetail/>}/>
                         <Route path="/reviewDetail" element={<ReviewDetail/>}/>
                     </Routes>
                 </div>
