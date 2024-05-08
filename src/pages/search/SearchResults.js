@@ -47,10 +47,10 @@ const SearchResults = ({results, searching}) => {
 const fetchResults = async ({query}) => {
     if (!query) return [];
     try {
-        console.log(query)
+        
         const response = await axios.get(`${process.env.REACT_APP_API_HOST}/album/search?keyword=${query}`, {
         });
-      console.log(response.data);
+      // console.log(response.data);
       return response.data;
     } catch (error) {
       console.error(error);
@@ -77,12 +77,13 @@ const Search = () => {
   
     useEffect(() => {
       setSearching(true);
-      console.log(debouncedQuery);
+      // console.log(debouncedQuery);
 
       (async () => {
         let results = await fetchResults({query: debouncedQuery});
         while (results.length === 0) {
             await new Promise((resolve) => setTimeout(resolve, 1000));
+            //console.log(results)
             results = await fetchResults({query: debouncedQuery});
         }
         setResults(results);
