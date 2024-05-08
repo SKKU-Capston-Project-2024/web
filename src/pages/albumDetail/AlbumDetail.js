@@ -1,3 +1,4 @@
+
 import { createPortal } from "react-dom";
 import styles from "./AlbumDetail.module.css";
 import {useEffect, useState, useRef} from "react";
@@ -44,7 +45,6 @@ const MainPage = () => {
         </div>
     );
 };
-
 
 const ReviewPage = () => {
     const onContainerClick = () => {
@@ -112,8 +112,6 @@ const AlbumDetailsPage = (props) => {
     console.log(props.albumId)
     const [reviewWriteModalOpen, setReviewWriteModalOpen] = useState(false);
     const reviewWriteModalBackground = useRef();
-
-    return (
         
       <div className={styles.albumPage}>
         <div className={styles.albumArtContainer}>
