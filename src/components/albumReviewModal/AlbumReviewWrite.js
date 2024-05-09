@@ -2,6 +2,7 @@ import React from 'react';
 import styles from './AlbumReviewWrite.module.css';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import StarRating from '../starRating2/StarRating3';
 
 const AlbumReviewWrite = ({ albumId, reviewWriteModalOpen, setReviewWriteModalOpen, reviewWriteModalBackground }) => {
     const [albumInfo, setAlbumInfo] = useState(null); // 앨범 정보를 저장할 상태
@@ -47,7 +48,7 @@ const AlbumReviewWrite = ({ albumId, reviewWriteModalOpen, setReviewWriteModalOp
                 </div>
                 <div className={styles.starRating}>
                     <div className={styles.starName}>별점</div>
-                    <div></div>
+                    <StarRating />
                 </div>
                 <div className={styles.review}>
                     <div className={styles.reviewName}>리뷰</div>
