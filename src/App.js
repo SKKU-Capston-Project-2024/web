@@ -10,6 +10,7 @@ import Search from "./pages/search/Search";
 import SearchResults from "./pages/search/SearchResults";
 import AlbumDetail from "./pages/albumDetail/AlbumDetail";
 import ReviewDetail from "./pages/reviewDetail/ReviewDetail";
+import StarRating2 from "./components/starRating2/StarRating2";
 
 function App() {
 
@@ -25,6 +26,7 @@ function App() {
                         <Route path="/search" element={<SearchResults/>}/>
                         <Route path="/albumDetail/:id" element={<AlbumDetail/>}/>
                         <Route path="/reviewDetail" element={<ReviewDetail/>}/>
+                        <Route path="/star" element={<StarRating2/>}/>
                     </Routes>
                 </div>
                 <FooterNav/>

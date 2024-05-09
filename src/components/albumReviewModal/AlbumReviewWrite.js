@@ -1,7 +1,30 @@
 import React from 'react';
 import styles from './AlbumReviewWrite.module.css';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 
-const AlbumReviewWrite = ({ reviewWriteModalOpen, setReviewWriteModalOpen, reviewWriteModalBackground }) => {
+const AlbumReviewWrite = ({ albumId, reviewWriteModalOpen, setReviewWriteModalOpen, reviewWriteModalBackground }) => {
+    const [albumInfo, setAlbumInfo] = useState(null); // 앨범 정보를 저장할 상태
+
+    useEffect(() => {
+        const fetchAlbumInfo = async () => {
+            if (!albumId) return;
+            try {
+                const response = await axios.get(`${process.env.REACT_APP_API_HOST}/album/info/${albumId}`, {});
+                console.log(response.data);
+                setAlbumInfo(response.data);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        fetchAlbumInfo();
+    }, [albumId]); // albumId가 변경될 때마다 함수 실행
+
+    if (!albumInfo) {
+        return <div>Loading...</div>; // 데이터 로딩 중 표시
+    }
+    
     return (
         <div className={styles.modalContainer} ref={reviewWriteModalBackground} onClick={e => {
             if (e.target === reviewWriteModalBackground.current) {
@@ -15,11 +38,11 @@ const AlbumReviewWrite = ({ reviewWriteModalOpen, setReviewWriteModalOpen, revie
                 </div>
                 <div className={styles.albumCover}>
                     <div>
-                        <img src="/ive.png" alt="albumCover" className={styles.albumCoverImg}></img>
+                        <img src={albumInfo.albumImg} alt="albumCover" className={styles.albumCoverImg}></img>
                     </div>
                     <div className={styles.albumInfo}>
-                        <div className={styles.albumName}>Eleven</div>
-                        <div className={styles.albumArtist}>아이브</div>
+                        <div className={styles.albumName}>{albumInfo.albumName}</div>
+                        <div className={styles.albumArtist}>{albumInfo.artistName}</div>
                     </div>
                 </div>
                 <div className={styles.starRating}>

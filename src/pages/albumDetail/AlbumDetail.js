@@ -140,7 +140,7 @@ const AlbumDetailsPage = (props) => {
         <NavigationBar />
         
         {reviewWriteModalOpen &&            
-               <AlbumReviewWrite 
+               <AlbumReviewWrite albumId={props.albumId}
                     reviewWriteModalOpen={reviewWriteModalOpen}
                     setReviewWriteModalOpen={setReviewWriteModalOpen}
                     reviewWriteModalBackground={reviewWriteModalBackground}
