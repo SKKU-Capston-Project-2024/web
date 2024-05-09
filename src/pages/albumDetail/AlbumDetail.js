@@ -3,6 +3,7 @@ import { createPortal } from "react-dom";
 import styles from "./AlbumDetail.module.css";
 import {useEffect, useState, useRef} from "react";
 import {useParams} from "react-router-dom";
+import axios from "axios";
 import AlbumReviewWrite from "../../components/albumReviewModal/AlbumReviewWrite";
 import ReviewPreview from "../../components/reviewPreview/ReviewPreview";
 import PlaylistPreview from "../../components/playlistPreview/PlaylistPreview";
@@ -109,46 +110,70 @@ const ListPage = () => {
 };
 // 앨범 상세페이지 컴포넌트
 const AlbumDetailsPage = (props) => {
-    console.log(props.albumId);
+    console.log(props.albumId)
     const [reviewWriteModalOpen, setReviewWriteModalOpen] = useState(false);
+    const [isLoading, setIsLoading] = useState(true); // 로딩 상태 추가
     const reviewWriteModalBackground = useRef();
+    const [albumInfo, setAlbumInfo] = useState(null);
 
-    return (
-        <div className={styles.albumPage}>
-            <div className={styles.albumArtContainer}>
-                <img src="/path/to/your/image.png" alt="Album Art" className={styles.albumArt} />
-            </div>
-            <div className={styles.albumInfo}>
-                <h1>I feel</h1>
-                <p>2023.05.15 | KR | 6곡 1시간 17분 소요</p>
-                <p>(여자)아이들</p>
-            </div>
-            <div className={styles.ratingInfo}>
-                <div className={styles.totalReviews}>Total Reviews 2414</div>
-                <div className={styles.averageRating}>Average Ratings 4.2 / 5</div>
-                <div className={styles.yourRating}>Your Ratings ? / 5</div>
-            </div>
-            <button className={styles.reviewButton} onClick={() => setReviewWriteModalOpen(true)}>이 앨범 리뷰하기 / 나의 리뷰 보기</button>
-            <div className={styles.socialButtons}>
-                <img src="/Vector.svg" alt="Vector" className={styles.socialIcon} />
-                <img src="/share.svg" alt="Share" className={styles.socialIcon} />
-                <img src="/bookmark_border.svg" alt="Bookmark" className={styles.socialIcon} />
-                <img src="/control_point.svg" alt="Control Point" className={styles.socialIcon} />
-                <img src="/open_in_new_off.svg" alt="Open in New" className={styles.socialIcon} />
-            </div>
-            {/* NavigationBar 컴포넌트 추가 */}
-            <NavigationBar />
+    const fetchAlbumInfo = async () => {
+        try {
+            setIsLoading(true); // 데이터를 불러오기 시작할 때 로딩 상태를 true로 설정
+            const response = await axios.get(`${process.env.REACT_APP_API_HOST}/album/info/${props.albumId}`, {});
+            console.log(response.data);
+            setAlbumInfo(response.data);
+            setIsLoading(false); // 데이터를 불러온 후 로딩 상태를 false로 설정
+        } catch (error) {
+            console.error('Failed to fetch album information:', error);
+            setIsLoading(false); // 에러 발생 시 로딩 상태를 false로 설정
+        }
+    };
 
-            {reviewWriteModalOpen &&
-                <AlbumReviewWrite
+    useEffect(() => {
+        fetchAlbumInfo();
+    }, [props.albumId]);
+
+    if (isLoading) {
+        return <div>Loading album information...</div>; // 로딩 상태일 때 로딩 메시지 표시
+    }
+
+    return (        
+      <div className={styles.albumPage}>
+        <div className={styles.albumArtContainer}>
+          <img src={albumInfo.albumImg} alt="Album Art" className={styles.albumArt} />
+        </div>
+        <div className={styles.albumInfo}>
+          <h1>{albumInfo.albumName}</h1>
+          <p>2023.05.15 | KR | 6곡 1시간 17분 소요</p>
+          <p>{albumInfo.artistName}</p>
+        </div>
+        <div className={styles.ratingInfo}>
+          <div className={styles.totalReviews}>Total Reviews 2414</div>
+          <div className={styles.averageRating}>Average Ratings 4.2 / 5</div>
+          <div className={styles.yourRating}>Your Ratings ? / 5</div>
+        </div>
+        <button className={styles.reviewButton} onClick={() => setReviewWriteModalOpen(true)}>이 앨범 리뷰하기 / 나의 리뷰 보기</button>
+        <div className={styles.socialButtons}>
+          <img src="/Vector.svg" alt="Vector" className={styles.socialIcon} />
+          <img src="/share.svg" alt="Share" className={styles.socialIcon} />
+          <img src="/bookmark_border.svg" alt="Bookmark" className={styles.socialIcon} />
+          <img src="/control_point.svg" alt="Control Point" className={styles.socialIcon} />
+          <img src="/open_in_new_off.svg" alt="Open in New" className={styles.socialIcon} />
+        </div>
+        {/* NavigationBar 컴포넌트 추가 */}
+        <NavigationBar />
+        
+        {reviewWriteModalOpen &&            
+               <AlbumReviewWrite albumId={props.albumId}
                     reviewWriteModalOpen={reviewWriteModalOpen}
                     setReviewWriteModalOpen={setReviewWriteModalOpen}
                     reviewWriteModalBackground={reviewWriteModalBackground}
-                />
-            }
-        </div>
+               />
+        }
+
+      </div>
     );
-};
+  };
 
   // NavigationBar 컴포넌트
 const NavigationBar = () => {
@@ -175,8 +200,6 @@ const AlbumDetail = () =>{
 
     return (
         <>
-         <h1>Album ID: {id}</h1> {/* ID 출력 */}
-
         <AlbumDetailsPage albumId={id} />
 
         </>
