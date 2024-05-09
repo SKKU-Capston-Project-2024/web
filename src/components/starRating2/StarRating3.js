@@ -37,24 +37,22 @@ const Right = styled.div`
   z-index: 1;
 `;
 
-const StarRating3 = () => {
-    const [score, setScore] = useState(0);
-    const [scoreFixed, setScoreFixed] = useState(score);
+const StarRating3 = ({ score, setScoreFixed }) => {
+    const [localScore, setLocalScore] = useState(0);
   
-    const handleLeftHalfEnter = (idx) => setScore(idx + 0.5);
-  
-    const handleRightHalfEnter = (idx) => setScore(idx + 1);
+    const handleLeftHalfEnter = (idx) => setLocalScore(idx + 0.5);
+    const handleRightHalfEnter = (idx) => setLocalScore(idx + 1);
   
     const handleStarClick = () => {
-      setScoreFixed(score);
+      setScoreFixed(localScore);  // 여기를 localScore로 수정
     };
   
     const handleStarLeave = () => {
-      if (score !== scoreFixed) {
-        setScore(scoreFixed);
-      }
+        if (localScore !== score) {
+          setLocalScore(score);  // localScore를 score로 초기화
+        }
     };
-  
+    
     return (
       <RowBox>
         {Array(5)
