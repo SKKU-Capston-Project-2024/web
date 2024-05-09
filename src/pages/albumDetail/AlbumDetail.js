@@ -137,7 +137,6 @@ const AlbumDetailsPage = (props) => {
         return <div>Loading album information...</div>; // 로딩 상태일 때 로딩 메시지 표시
     }
 
-
     return (        
       <div className={styles.albumPage}>
         <div className={styles.albumArtContainer}>
