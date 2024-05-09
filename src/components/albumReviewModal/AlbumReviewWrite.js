@@ -27,12 +27,14 @@ const AlbumReviewWrite = ({ albumId, reviewWriteModalOpen, setReviewWriteModalOp
 
     const handleSubmit = async (event) => {
         event.preventDefault();  // 폼 기본 제출 방지
-        //console.log(albumId, score, reviewTitleRef.current.value, reviewContentRef.current.value)
+        const scoreDouble = score * 2;
+        console.log(albumId, scoreDouble, reviewTitleRef.current.value, reviewContentRef.current.value)
+        
         /*
         try {
             const response = await axios.post(`${process.env.REACT_APP_API_HOST}/album/review`, {
                 albumId: albumId,
-                score: score,
+                score: score, 
                 title: reviewTitleRef.current.value,
                 content: reviewContentRef.current.value
             });
@@ -42,7 +44,9 @@ const AlbumReviewWrite = ({ albumId, reviewWriteModalOpen, setReviewWriteModalOp
             console.error(error);
         }
         */
+        
     };
+    
 
     if (!albumInfo) {
         return <div>Loading...</div>; // 데이터 로딩 중 표시

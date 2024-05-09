@@ -116,7 +116,7 @@ const AlbumDetailsPage = (props) => {
     return (        
       <div className={styles.albumPage}>
         <div className={styles.albumArtContainer}>
-          <img src="/path/to/your/image.png" alt="Album Art" className={styles.albumArt} />
+          <img src="/ive.png" alt="Album Art" className={styles.albumArt} />
         </div>
         <div className={styles.albumInfo}>
           <h1>I feel</h1>

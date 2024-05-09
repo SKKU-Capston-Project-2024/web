@@ -26,7 +26,6 @@ function App() {
                         <Route path="/search" element={<SearchResults/>}/>
                         <Route path="/albumDetail/:id" element={<AlbumDetail/>}/>
                         <Route path="/reviewDetail" element={<ReviewDetail/>}/>
-                        <Route path="/star" element={<StarRating3/>}/>
                     </Routes>
                 </div>
                 <FooterNav/>
