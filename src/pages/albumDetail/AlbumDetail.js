@@ -156,9 +156,7 @@ const AlbumDetailsPage = (props) => {
         <div className={styles.socialButtons}>
           <img src="/Vector.svg" alt="Vector" className={styles.socialIcon} />
           <img src="/share.svg" alt="Share" className={styles.socialIcon} />
-          <img src="/bookmark_border.svg" alt="Bookmark" className={styles.socialIcon} />
-          <img src="/control_point.svg" alt="Control Point" className={styles.socialIcon} />
-          <img src="/open_in_new_off.svg" alt="Open in New" className={styles.socialIcon} />
+          <img src="/add.svg" alt="Add" className={styles.socialIcon} />
         </div>
         {/* NavigationBar 컴포넌트 추가 */}
         <NavigationBar />
