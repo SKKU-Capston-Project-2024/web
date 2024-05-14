@@ -15,7 +15,7 @@ const Header = (props) => {
 
     const getUserInfo = () => {
         const token = localStorage.getItem('accessToken');
-        axios.get(`${process.env.REACT_APP_API_HOST}/profile/me`, {
+        axios.get(`${process.env.REACT_APP_API_HOST}/user/profile/me`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -55,7 +55,7 @@ const Header = (props) => {
     }
 
     return (
-        <div>
+        <div className={styles.headerWrapper}>
             <LoginModal/>
             <header className={styles.headerContainer}>
                 <img className={styles.logo} src="/mutopia.svg" alt="MUTOPIA"></img>
