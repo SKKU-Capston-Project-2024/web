@@ -1,9 +1,55 @@
 import styles from './ReviewDetail.module.css';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import StarRating from '../../components/starRating/StarRating';
+import ToggleFilter from "../../components/toggleFilter/ToggleFilter";
+import ReviewPreview from "../../components/reviewPreview/ReviewPreview";
+import {UserContext} from "../../context/UserContext";
 
-const ReviewDetail = () => {
+const ReviewDetail = (props) => {
+    const onContainerClick = () => {
+    };
+    const { user } = useContext(UserContext); 
+    const [isLoading, setIsLoading] = useState(true);
+    const [reviewStatus, setReviewStatus] = useState(null); 
+
+    useEffect(() => {
+        const fetchReviewStatus = async () => {
+            if (!user) {
+                setReviewStatus(null);
+                setIsLoading(false);
+                return;
+            }
+            try {
+                const response = await axios.get(`${process.env.REACT_APP_API_HOST}/album/review/status/${props.albumId}`, {
+                    headers: { Authorization: `Bearer ${user.token}` }
+                });
+                setReviewStatus(response.data.hasReviewed ? 'written' : 'not_written');
+            } catch (error) {
+                console.error('Error fetching review status:', error);
+                setReviewStatus('not_written'); 
+            }
+            setIsLoading(false);
+        };
+
+        fetchReviewStatus();
+    }, [user, props.albumId]);
+
+    const handleButtonClick = () => {
+        if (!user) {
+            // 여기에서 로그인 모달을 표시하는 로직
+            alert('로그인이 필요합니다.');
+            return;
+        }
+        if (reviewStatus === 'written') {
+            // 리뷰 상세 페이지로 이동
+            window.location.href = `/review/${props.albumId}`;
+        } else {
+            // 리뷰 작성 모달 표시
+            alert('리뷰 작성 페이지로 이동합니다.');
+        }
+    };
+
     return (
         <>
         <div className={styles.reviewContainer}>
@@ -31,17 +77,58 @@ const ReviewDetail = () => {
             </div>
             <div className={styles.reivewNav}>
                 <div className={styles.likeIcon}>
-                    <img src="/favoritefilled.svg" alt="likes" className={styles.socialIcon} />
-                    <div className={styles.socialCount}>3</div>    
+                    <img src="/heart-icon.svg" alt="likes" className={styles.socialIcon} />
+                    <div className={styles.socialCount}>100</div>    
                 </div>
                 <img src="/share.svg" alt="share" className={styles.shareIcon} />
             </div>
         </div>
-        <button className={styles.btnWrite}>이 앨범 리뷰하기</button>        
+        <button className={styles.btnWrite}>이 앨범 리뷰하기 / 나의 리뷰보기</button>        
         <div>
             <div className={styles.othersContainer}>
-                다른 사람 리뷰 및 수록곡 리뷰
+                <div className={styles.headerContainer}>
+                    <h2>~의 다른 리뷰</h2>
+                    <ToggleFilter menu={["최근", "인기"]} />
+                    </div>
+                    <div className="verticalScroll">
+                    <ReviewPreview
+                        ellipse85="/ellipse-85@2x.png"
+                        iFeel="I feel"
+                        rectangle1480="/rectangle-1480@2x.png"
+                        prop="아이들 리뷰 제목"
+                        onContainerClick={onContainerClick}
+                    />
+                    <ReviewPreview
+                        ellipse85="/ellipse-85@2x.png"
+                        iFeel="I feel"
+                        rectangle1480="/rectangle-1480@2x.png"
+                        prop="아이들 리뷰 제목"
+                        onContainerClick={onContainerClick}/>
+                </div>
             </div>
+
+            <div className={styles.othersContainer}>
+                <div className={styles.headerContainer}>
+                    <h2>이 앨범의 다른 리뷰</h2>
+                    <ToggleFilter menu={["최근", "인기"]} />
+                    </div>
+                    <div className="verticalScroll">
+                    <ReviewPreview
+                        ellipse85="/ellipse-85@2x.png"
+                        iFeel="I feel"
+                        rectangle1480="/rectangle-1480@2x.png"
+                        prop="아이들 리뷰 제목"
+                        onContainerClick={onContainerClick}
+                    />
+                    <ReviewPreview
+                        ellipse85="/ellipse-85@2x.png"
+                        iFeel="I feel"
+                        rectangle1480="/rectangle-1480@2x.png"
+                        prop="아이들 리뷰 제목"
+                        onContainerClick={onContainerClick}/>
+                </div>
+            </div>
+
         </div>
         </>
     );
