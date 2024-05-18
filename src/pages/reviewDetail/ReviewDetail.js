@@ -1,54 +1,122 @@
-import styles from './ReviewDetail.module.css';
-import axios from 'axios';
 import { useState, useEffect, useContext } from 'react';
+import axios from 'axios';
+import styles from './ReviewDetail.module.css';
 import StarRating from '../../components/starRating/StarRating';
 import ToggleFilter from "../../components/toggleFilter/ToggleFilter";
 import ReviewPreview from "../../components/reviewPreview/ReviewPreview";
-import {UserContext} from "../../context/UserContext";
+import { UserContext } from "../../context/UserContext";
+import AlbumReviewWrite from "../../components/albumReviewModal/AlbumReviewWrite";
+
 
 const ReviewDetail = (props) => {
-    const onContainerClick = () => {
+    const { user } = useContext(UserContext);
+    const [albumInfo, setAlbumInfo] = useState(null);
+    const [myRating, setMyRating] = useState("-");
+    const [myReviewId, setMyReviewId] = useState(null); 
+    const [isLoading, setIsLoading] = useState(true); // 로딩 상태 추가
+    const [reviewWriteModalOpen, setReviewWriteModalOpen] = useState(false); 
+    const [isLiked, setIsLiked] = useState(false); // 추가: 좋아요 상태 관리
+    
+    const fetchAlbumInfo = async () => {
+        try {
+            setIsLoading(true); // 데이터를 불러오기 시작할 때 로딩 상태를 true로 설정
+            const response = await axios.get(`${process.env.REACT_APP_API_HOST}/album/info/${props.albumId}`, {});
+            console.log(response.data);
+            setAlbumInfo(response.data);
+            setIsLoading(false); // 데이터를 불러온 후 로딩 상태를 false로 설정
+        } catch (error) {
+            console.error('Failed to fetch album information:', error);
+            alert('잘못된 접근입니다.');
+            history.back();
+        }
     };
-    const { user } = useContext(UserContext); 
-    const [isLoading, setIsLoading] = useState(true);
-    const [reviewStatus, setReviewStatus] = useState(null); 
 
-    useEffect(() => {
-        const fetchReviewStatus = async () => {
-            if (!user) {
-                setReviewStatus(null);
-                setIsLoading(false);
-                return;
-            }
+    const getMyReview = async () => {
+        const jwt = localStorage.getItem("accessToken");
+        if (jwt) {
             try {
-                const response = await axios.get(`${process.env.REACT_APP_API_HOST}/album/review/status/${props.albumId}`, {
-                    headers: { Authorization: `Bearer ${user.token}` }
+                const response = await axios.get(`${process.env.REACT_APP_API_HOST}/album/review/check?albumId=${props.albumId}`, {
+                    headers: { Authorization: `Bearer ${jwt}` }
                 });
-                setReviewStatus(response.data.hasReviewed ? 'written' : 'not_written');
+                if (response.data.userHasReviewed && response.data.albumReviewId !== null) {
+                    setMyReviewId(response.data.albumReviewId);
+                }
             } catch (error) {
-                console.error('Error fetching review status:', error);
-                setReviewStatus('not_written'); 
+                console.error('Failed to fetch my review:', error);
             }
-            setIsLoading(false);
-        };
+        }
+    };
 
-        fetchReviewStatus();
-    }, [user, props.albumId]);
-
-    const handleButtonClick = () => {
-        if (!user) {
-            // 여기에서 로그인 모달을 표시하는 로직
-            alert('로그인이 필요합니다.');
+    const getMyRating = async () => {
+        const jwt = localStorage.getItem("accessToken");
+        if (jwt === null) {
             return;
         }
-        if (reviewStatus === 'written') {
-            // 리뷰 상세 페이지로 이동
-            window.location.href = `/review/${props.albumId}`;
+        axios.get(`${process.env.REACT_APP_API_HOST}/album/${props.albumId}/rating`, {
+            headers: {
+                Authorization: `Bearer ${jwt}`
+            }
+        }).then((response) => {
+            if (response.data.rating !== null) {
+                setMyRating(response.data.rating)
+            }
+        }).catch((error) => {
+            console.error('Failed to fetch my review:', error);
+        });
+    }
+
+    const moveToMyReviewOrWrite = () => {
+        console.log(user?.id);
+        if (!user?.id) {
+            alert('로그인이 필요합니다.');
+            const loginDialog = document.getElementById("loginModal");
+            loginDialog.showModal();
+            return;
+        }
+        if (myReviewId) {
+            window.location.href = `/album/review/${myReviewId}`;
         } else {
-            // 리뷰 작성 모달 표시
-            alert('리뷰 작성 페이지로 이동합니다.');
+            setReviewWriteModalOpen(true);
         }
     };
+
+    const toggleReviewLike = () => {
+        const jwt = localStorage.getItem("accessToken");
+        if (!jwt) {
+            alert('로그인이 필요합니다.');
+            const loginDialog = document.getElementById("loginModal");
+            loginDialog.showModal();
+            return;
+        }
+        axios.post(`${process.env.REACT_APP_API_HOST}/album/review/${myReviewId}/like/toggle`, {}, {
+            headers: {
+                Authorization: `Bearer ${jwt}`
+            }
+        }).then((response) => {
+            setIsLiked(response.data.likeStatus === "ON")
+        }).catch((error) => {
+            console.error('Failed to toggle like:', error);
+            setIsLiked(!isLiked); // 실패 시 현재 상태 반전
+        });
+    };
+
+    const onReviewLikeClicked = () => {
+        setIsLiked(!isLiked);
+        toggleReviewLike();
+    };
+    
+    const onContainerClick = () => {
+    };
+
+    useEffect(() => {
+        fetchAlbumInfo();
+        getMyReview();
+        getMyRating();
+    }, [props.albumId]);
+
+    if (isLoading) {
+        return <div>Loading album information...</div>; // 로딩 상태일 때 로딩 메시지 표시
+    }
 
     return (
         <>
@@ -58,10 +126,10 @@ const ReviewDetail = (props) => {
                 <img className={styles.writerPhoto} src="/defaultProfile.svg" />
             </div>
             <div className={styles.reviewCover}>
-                <img className={styles.albumCover} src="/ive.png"/>
+                <img src={albumInfo?.albumImg} alt="Album Art" className={styles.albumArt}/>
                 <div className={styles.reviewInfo}>
-                    <div className={styles.albumTitle}>9자넘으면...</div>
-                    <div className={styles.artist}>아티스트</div>  
+                    <div className={styles.albumTitle}>{albumInfo?.albumName}</div>
+                    <div className={styles.artist}>{albumInfo?.artistName}</div>  
                     <div className={styles.rating}>
                         <StarRating score={10}/>
                     </div>
@@ -77,13 +145,13 @@ const ReviewDetail = (props) => {
             </div>
             <div className={styles.reivewNav}>
                 <div className={styles.likeIcon}>
-                    <img src="/heart-icon.svg" alt="likes" className={styles.socialIcon} />
+                    <img src="/heart-icon.svg" alt="likes" className={styles.socialIcon} onClick={onReviewLikeClicked} />
                     <div className={styles.socialCount}>100</div>    
                 </div>
                 <img src="/share.svg" alt="share" className={styles.shareIcon} />
             </div>
         </div>
-        <button className={styles.btnWrite}>이 앨범 리뷰하기 / 나의 리뷰보기</button>        
+        <button className={styles.btnWrite} onClick={moveToMyReviewOrWrite}>이 앨범 리뷰하기 / 나의 리뷰보기</button>     
         <div>
             <div className={styles.othersContainer}>
                 <div className={styles.headerContainer}>
