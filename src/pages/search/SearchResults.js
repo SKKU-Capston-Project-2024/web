@@ -64,71 +64,44 @@ const fetchResults = async (query) => {
     }
 };
 
-const useDebouncedState = (value, delay = 500) => {
-    const [debouncedValue, setDebouncedValue] = useState(value);
-
-    useEffect(() => {
-        const timeout = setTimeout(() => setDebouncedValue(value), delay);
-        return () => clearTimeout(timeout);
-    }, [value, delay]);
-
-    return debouncedValue;
-}
-
 const Search = () => {
-    const [query, setQuery] = useState("");
-    const debouncedQuery = useDebouncedState(query, 1_000);
     const [results, setResults] = useState([]);
     const [searching, setSearching] = useState(false);
 
     const inputRef = useRef();
 
-    /*    useEffect(() => {
-            setSearching(true);
-            // console.log(debouncedQuery);
-
-            (async () => {
-                let results = await fetchResults({query: debouncedQuery});
-                while (results.length === 0) {
-                    await new Promise((resolve) => setTimeout(resolve, 1000));
-                    //console.log(results)
-                    results = await fetchResults({query: debouncedQuery});
-                }
-                setResults(results);
-                setSearching(false);
-            })();
-        }, [debouncedQuery]);*/
+    const setQueryParams = (query) => {
+        const url = new URL(window.location.href);
+        url.searchParams.set('q', query);
+        window.history.pushState({}, '', url);
+    }
 
     const search = async () => {
         const now = inputRef.current.value;
-        console.log('now', now);
         if (now === "") {
             return;
         }
         try {
             setTimeout(async () => {
                 const changed = inputRef.current.value;
-                console.log('qq', now, changed, changed == now);
-                if (changed == now) {
+                if (changed === now) {
                     setSearching(true);
                     const result = await fetchResults(changed);
+                    setQueryParams(changed);
                     setResults(result);
                 }
             }, 500);
         } catch (e) {
-
         }
     }
 
     useEffect(() => {
-        search();
-    }, [query]);
-
-    const onQueryChanged = (value) => {
-        console.log('v', value);
-        setQuery(value);
-    }
-
+        const query = new URLSearchParams(window.location.search).get('q');
+        if (query) {
+            inputRef.current.value = query;
+            search();
+        }
+    }, []);
 
     return (
         <div className={styles.container}>
