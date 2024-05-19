@@ -115,6 +115,7 @@ const getAlbums = async (query) => {
     if (!query) return [];
     try {
         const response = await axios.get(`${process.env.REACT_APP_API_HOST}/album/search?keyword=${query}`, {});
+        // console.log(response.data);
         return response.data;
     } catch (error) {
         console.error(error);
