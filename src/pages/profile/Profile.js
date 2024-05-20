@@ -22,7 +22,7 @@ const MainPage = ( props ) => {
     const titleOthers = ["의 뮤직보드 🎵", "의 인생 앨범 💿", "의 인생곡 ✍🏻"];
 
     const getTopsterInfo = async () => {
-        axios.get(`${process.env.REACT_APP_API_HOST}/user/${userInfo.userId}/topster`, {}).then((response) => {
+        axios.get(`${process.env.REACT_APP_API_HOST}/user/${userInfo.userId}/profile/topster`, {}).then((response) => {
             setTopsterInfo(response.data);
             setIsLoading(false);
         }).catch((error) => {
@@ -73,6 +73,34 @@ const MainPage = ( props ) => {
                 "totalLikeCount": 0
             }
         }
+        const mockReview2 =
+        {
+            "review": {
+                "id": 1,
+                "title": "두번깜빡일수없다",
+                "content": " “다른 문을 열어/따라갈 필요는 없어”라 외쳤던 ‘I am’의 가사가 무색하게 많은 것이 겹쳐 보인다. 베이스라인을 강조한 ‘Off the record’는 피프티 피프티의 ‘Cupid’와 태연의 ‘Weekend’가 레퍼런스로 삼은 도자 캣의 분홍색 디스코 감성을 닮았고, ‘Baddie’의 사운드 질감과 랩 위주의 구성에서 에스파의 ‘Savage’와 NCT의 잔향을 지우기란 쉽지 않다. 전통적인 색채로 ‘정통성’을 손에 쥐었던 아이브가 눈치를 많이 보고 있다.",
+                "rating": 4,
+                "isLiked": false,
+                "likeCount": 0,
+                "createdAt": "2024.04.01"
+            },
+            "writer": {
+                "id": "testuser",
+                "username": "바보랜드",
+                "profileImageUrl": "/mock3.jpg"
+            },
+            "album": {
+                "id": "02vMw0MNNUbBxS6WeB1PR4",
+                "name": "Blink Twice If You’re Okay",
+                "artistName": "FARR",
+                "coverImageUrl": "https://i.scdn.co/image/ab67616d0000b27307d0d17f6fb756e66812f86a",
+                "releaseDate": "2024-05-10",
+                "length": null,
+                "totalReviewCount": 2,
+                "averageRating": null,
+                "totalLikeCount": 0
+            }
+        }
 
     if (isLoading) {
         return <div>Loading Profile...</div>; // 로딩 상태일 때 로딩 메시지 표시
@@ -95,7 +123,7 @@ const MainPage = ( props ) => {
                 <div className={styles.sectionTitle}>{isMine ? titleMine[1] : userInfo.username + titleOthers[1]}</div>
             </div>
             <div className="verticalScroll">
-                <ReviewPreview content={mockReview}/>
+                <ReviewPreview content={mockReview2}/>
                {albumReview.map((review, index) => (<ReviewPreview content={review} key={index}/>))}
                 
             </div>
@@ -264,6 +292,7 @@ const Profile = ( props ) => {
     const getProfileHeader = async () => {
         axios.get(`${process.env.REACT_APP_API_HOST}/user/${userId}/profile/aggregation`, {}).then((response) => {
             setUserInfo(response.data);
+            console.log(response.data);
             setIsLoading(false);
         }).catch((error) => {
             console.error('Failed to fetch profile header:', error);

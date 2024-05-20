@@ -334,7 +334,7 @@ const AlbumDetailsPage = (props) => {
                     <img src="/add.svg" alt="🌠" className={styles.socialIcon} onClick={navigateToPlaylistAdd}/>
                 </div>
             </div>
-            <ShareDialog dialogId="shareDialog" linkUrl="https://naver.com"/>
+            <ShareDialog dialogId="shareDialog" linkUrl={location.href}/>
             <NavigationBar
                 data={{albumInfo, reviewList}}
             /> {/* This remains outside the new container */}
