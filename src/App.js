@@ -29,7 +29,7 @@ function App() {
                         <Route path="/albumDetail/:id" element={<AlbumDetail/>}/>
                         <Route path="/reviewDetail" element={<ReviewDetail/>}/>
                         <Route path="/reviewDetail/:id" element={<ReviewDetail/>}/>
-                        <Route path="/followUser" element={<FollowUser/>}/>
+                        <Route path="/profile/:id/followers" element={<FollowUser/>}/>
                         <Route path="/playlist" element={<Playlist/>}/>
                         <Route path="/addSong" element={<AddSong/>}/>
                         <Route path="/playlistadd" element={<PlaylistAdd/>}/>
