@@ -14,7 +14,7 @@ import {useNavigate, useParams} from "react-router-dom";
 const testJwt = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJPbmxpbmUgSldUIEJ1aWxkZXIiLCJpYXQiOjE3MTUwOTgwMzUsImV4cCI6MTc0NjYzNDA4NywiYXVkIjoid3d3LmV4YW1wbGUuY29tIiwic3ViIjoidGVzdHVzZXIiLCJSb2xlIjoiVVNFUiJ9.1_R8SRfmLEGy3YB5nVfHYU6om-g7tbifxyRmHAYV4D4"
 
 const MainPage = (props) => {
-    const {userInfo, isMine, albumReview, topsterInfo, trackReview} = props;
+    const {userInfo, isMine, albumReview, topsterInfo, trackReview, refreshTopster} = props;
 
 
     const {user} = useContext(UserContext);
@@ -86,12 +86,15 @@ const MainPage = (props) => {
                 <div className={styles.sectionTitleContainer}>
                     <div
                         className={styles.sectionTitle}>{isMine ? titleMine[0] : userInfo.username + titleOthers[0]}</div>
-                    {user?.id &&
-                        <img src="/pencil-grey.svg" className={styles.btnEditTopster} alt="edit"
-                             onClick={() => setIsTopsterEraseMode(!isTopsterEraseMode)}/>
+                    {isMine &&
+                        <div title="editProfile" className={styles.btnEditTopster}
+                             onClick={() => setIsTopsterEraseMode(!isTopsterEraseMode)}>
+                            {isTopsterEraseMode ? "완료" : "편집"}
+                        </div>
                     }
                 </div>
-                <TopsterDisplay topsterInfo={topsterInfo} isErasable={isTopsterEraseMode}/>
+                <TopsterDisplay topsterInfo={topsterInfo} isErasable={isTopsterEraseMode}
+                                refreshTopster={refreshTopster}/>
             </section>
             <section className={styles.subSection}>
                 <div className={styles.sectionTitleContainer}>
@@ -276,6 +279,10 @@ const Profile = (props) => {
         }
     }
 
+    useEffect(() => {
+        checkIsMine();
+    }, [user]);
+
     const getTopsterInfo = () => {
         axios.get(`${process.env.REACT_APP_API_HOST}/user/${userId}/profile/topster`, {}).then((response) => {
             setTopsterInfo(response.data);
@@ -370,10 +377,6 @@ const Profile = (props) => {
         getLikeReviews();
     }, []);
 
-    useEffect(() => {
-        checkIsMine()
-    }, []);
-
 
     return (
         <div className={styles.profileContainer}>
@@ -395,7 +398,7 @@ const Profile = (props) => {
             <div>
                 {tab === 'main' &&
                     <MainPage userInfo={userInfo} isMine={isMine} albumReview={albumReview} topsterInfo={topsterInfo}
-                              trackReview={trackReviews}
+                              trackReview={trackReviews} refreshTopster={getTopsterInfo}
                     />}
                 {tab === 'review' &&
                     <ReviewPage userInfo={userInfo} isMine={isMine} albumReview={albumReview}
