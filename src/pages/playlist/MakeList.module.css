@@ -1,0 +1,78 @@
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5); /* Matched background opacity */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+  }
+  
+  .modal {
+    background-color: white;
+    width: 90%; /* Matched width */
+    height: 80%; /* Matched height */
+    max-width: 600px; /* Retained max-width */
+    border-radius: 10px; /* Matched border-radius */
+    padding: 20px; /* Padding to allow for content margin inside modal */
+    box-sizing: border-box; /* Ensure padding is included in width/height */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center-align items within the modal */
+    justify-content: center; /* Vertically center content in the modal */
+  }
+  
+  .heading {
+    font-size: 30px; /* Ensured large font size for heading */
+    margin-top: 30px; /* Increased top margin for spacing */
+    margin-bottom: 30px; /* Increased bottom margin for spacing */
+  }
+  
+  .input {
+    width: 80%; /* Adjust width for consistency */
+    padding: 12px;
+    font-size: 16px; /* Adjusted font size for visibility */
+    background: transparent;
+    border: none;
+    outline: none;
+    border-bottom: 2px solid #7B61FF; /* Kept stylistic border-bottom */
+  }
+  
+  .button {
+    width: 80%; /* Adjust width for consistency */
+    padding: 15px 20px;
+    font-size: 18px;
+    margin-top: 50px; /* Increased spacing from input */
+    margin-bottom: 50px; /* Increased spacing from bottom of modal */
+    background-color: #7B61FF;
+    border: none;
+    border-radius: 15px; /* Styled to match overall modal aesthetics */
+    cursor: pointer;
+    color: white;
+  }
+  
+  .button:hover {
+    background-color: #8863ff;
+  }
+
+  .modalHeader {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    padding: 2rem;
+    position: relative;
+  }
+  .closeButton {
+    align-self: flex-end; 
+    margin-top: 10px;
+    margin-right: 10px;
+    background: none;
+    border: none;
+    font-size: 2rem;
+    cursor: pointer;
+    color: #333;
+  }
+  

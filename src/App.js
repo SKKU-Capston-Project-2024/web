@@ -15,6 +15,7 @@ import StarRating3 from "./components/starRating2/StarRating3";
 import Playlist from "./pages/playlist/Playlist";
 import AddSong from "./pages/addSong/AddSong";
 import PlaylistAdd from "./pages/playlist/PlaylistAdd";
+import MakeList from "./pages/playlist/MakeList";
 
 function App() {
 
@@ -35,6 +36,7 @@ function App() {
                         <Route path="/playlist" element={<Playlist/>} />
                         <Route path="/addSong" element={<AddSong/>} />
                         <Route path="/playlistadd" element={<PlaylistAdd/>} />
+                        <Route path="/makeList" element={<MakeList/>} />
                     </Routes>
                 </div>
                 <FooterNav/>
