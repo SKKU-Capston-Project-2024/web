@@ -300,7 +300,11 @@ const Profile = (props) => {
     }
 
     const getUserTrackReviews = () => {
-        axios.get(`${process.env.REACT_APP_API_HOST}/user/${userId}/comment/recent`, {}).then((response) => {
+        axios.get(`${process.env.REACT_APP_API_HOST}/user/${userId}/song/comment/recent`, {
+            params: {
+                offset: 0,
+            }
+        }).then((response) => {
             setTrackReviews(response.data);
         }).catch((error) => {
             console.error('Failed to fetch comments:', error);
