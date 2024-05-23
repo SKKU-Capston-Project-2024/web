@@ -29,9 +29,9 @@ const MainPage = (props) => {
                 </div>
                 <div className={styles.trackListContainer}>
                     {
-                        tracks.sort((a, b) => a.trackNumber - b.trackNumber).map((track) => {
+                        tracks.sort((a, b) => a.trackNumber - b.trackNumber).map((track, index) => {
                             return (
-                                <TrackItem track={track}/>
+                                <TrackItem key={index} track={track}/>
                             )
                         })
                     }
@@ -129,8 +129,14 @@ const TrackItem = (props) => {
 
     const {track} = props;
 
+    const navigate = useNavigate();
+
+    const moveToTrackDetailPage = (trackId) => {
+        navigate(`/trackDetail/${trackId}`);
+    };
+
     return (
-        <div className={styles.trackItem}>
+        <div className={styles.trackItem} onClick={() => moveToTrackDetailPage(track.id)}>
             <div className={styles.trackNumber}>{track.trackNumber}</div>
             <div className={styles.trackTitle}>{track.name}</div>
             <div className={styles.trackDuration}>{track.length}</div>
@@ -161,7 +167,7 @@ const AlbumDetailsPage = (props) => {
     const [reviewList, setReviewList] = useState([]);
     const navigate = useNavigate();
 
-    // 곡 추가 페이지로 이동
+    // 곡 추가 페이지로 이동 -> 탑스터로 수정 필요
     const navigateToPlaylistAdd = () => {
         navigate('/playlistadd');
     };
@@ -240,7 +246,7 @@ const AlbumDetailsPage = (props) => {
 
     const moveToMyReviewOrWrite = () => {
         console.log(user.id);
-        if (!user?.id) {
+        if (!user?.id) { // if(!user?.id)
             alert('로그인이 필요합니다.');
             const loginDialog = document.getElementById("loginModal");
             loginDialog.showModal();
@@ -369,7 +375,7 @@ const NavigationBar = (props) => {
                     <div>리뷰</div>
                     <div className={styles.indicator}></div>
                 </div>
-                <div className={tab === 'likes' ? styles.activeTab : styles.tab} onClick={() => setTab('list')}>
+                <div className={tab === 'list' ? styles.activeTab : styles.tab} onClick={() => setTab('list')}>
                     <div>리스트</div>
                     <div className={styles.indicator}></div>
                 </div>
