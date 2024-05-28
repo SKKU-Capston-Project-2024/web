@@ -237,7 +237,29 @@ const LikesPage = (props) => {
                 {likeComments?.length === 0 ? <div>좋아요한 한줄평이 없습니다.</div> :
                     <div className="verticalScroll">
                         {
-                            likeComments.map((review, index) => (<TrackReview content={review} key={index}/>))
+                            likeComments.map((comment, index) => {
+                                    const content = {
+                                        writer: {
+                                            userId: comment.writerId,
+                                            username: comment.writerName,
+                                            profileImageUrl: comment.writerProfileImage,
+                                        },
+                                        songComment: {
+                                            isLiked: comment.isLiked,
+                                            songInfo: {
+                                                id: comment.songId,
+                                                title: comment.songTitle,
+                                            },
+                                            comment: comment.comment,
+                                            rating: comment.rating,
+                                            createdAt: comment.createdAt
+                                        }
+                                    }
+
+
+                                    return (<TrackReview content={content} key={index}/>)
+                                }
+                            )
                         }
                     </div>}
             </section>
