@@ -242,10 +242,10 @@ const LikesPage = (props) => {
                                         writer: {
                                             userId: comment.writerId,
                                             username: comment.writerName,
-                                            profileImageUrl: comment.writerProfileImage,
+                                            profileImageUrl: comment.writerProfileImg,
                                         },
                                         songComment: {
-                                            isLiked: comment.isLiked,
+                                            isLiked: true,
                                             songInfo: {
                                                 id: comment.songId,
                                                 title: comment.songTitle,
@@ -267,7 +267,13 @@ const LikesPage = (props) => {
                 <div className={styles.sectionTitleContainer}>
                     <div className={styles.sectionTitle}>{title[3]}</div>
                 </div>
-                <PlaylistPreview/>
+                {likePlaylists?.length === 0 ? <div>찜한 플레이리스트가 없습니다.</div> :
+                    <div className="verticalScroll">
+                        {
+                            likePlaylists.map((playlist, index) => (<PlaylistPreview content={playlist} key={index}/>))
+                        }
+                    </div>
+                }
             </section>
         </div>
     )
@@ -407,7 +413,7 @@ const Profile = (props) => {
 
     const getLikePlaylists = () => {
         const accessToken = localStorage.getItem('accessToken');
-        axios.get(`${process.env.REACT_APP_API_HOST}/playlist/like/${userId}`, {
+        axios.get(`${process.env.REACT_APP_API_HOST}/user/${userId}/playlist/like`, {
             headers: {
                 Authorization: `Bearer ${accessToken}`
             },
@@ -431,7 +437,8 @@ const Profile = (props) => {
         getLikeAlbums();
         getLikeTracks();
         getLikeReviews();
-        getLikeComments()
+        getLikeComments();
+        getLikePlaylists();
     }, []);
 
 
