@@ -15,6 +15,8 @@ import Playlist from "./pages/playlist/Playlist";
 import AddSong from "./pages/addSong/AddSong";
 import PlaylistAdd from "./pages/playlist/PlaylistAdd";
 import MakeList from "./pages/playlist/MakeList";
+import SpotifyLogin from "./pages/spotifyLogin/SpotifyLogin";
+
 
 function App() {
 
@@ -32,11 +34,12 @@ function App() {
                         <Route path="/trackDetail/:id" element={<TrackDetail/>}/>
                         <Route path="/reviewDetail/:id" element={<ReviewDetail/>}/>
                         <Route path="/reviewDetail" element={<ReviewDetail/>}/>
-                        <Route path="/playlist" element={<Playlist/>} />
-                        <Route path="/addSong" element={<AddSong/>} />
-                        <Route path="/playlistadd" element={<PlaylistAdd/>} />
-                        <Route path="/makeList" element={<MakeList/>} />
-                        <Route path="/profile/:id/followers" element={<FollowUser/>}/>                          
+                        <Route path="/playlist" element={<Playlist/>}/>
+                        <Route path="/addSong" element={<AddSong/>}/>
+                        <Route path="/playlistadd" element={<PlaylistAdd/>}/>
+                        <Route path="/makeList" element={<MakeList/>}/>
+                        <Route path="/profile/:id/followers" element={<FollowUser/>}/>
+                        <Route path="/spotify-login" element={<SpotifyLogin/>}/>
                     </Routes>
                 </div>
                 <FooterNav/>
