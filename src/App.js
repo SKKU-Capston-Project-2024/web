@@ -35,9 +35,10 @@ function App() {
                         <Route path="/playlist" element={<Playlist/>} />
                         <Route path="/addSong" element={<AddSong/>} />
                         <Route path="/playlistadd" element={<PlaylistAdd/>} />
+                        <Route path="/playlistadd/:userId/:songId" element={<PlaylistAdd/>} />
                         <Route path="/makeList" element={<MakeList/>} />
-                        <Route path="/reviseList" element={<ReviseList/>} />
-                        <Route path="/profile/:id/followers" element={<FollowUser/>}/>                          
+                        <Route path="/makeList/:userId/:songId" element={<MakeList/>} />
+                        <Route path="/profile/:id/followers" element={<FollowUser/>}/>                                                    
                     </Routes>
                 </div>
                 <FooterNav/>
