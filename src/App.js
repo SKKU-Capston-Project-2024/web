@@ -15,6 +15,7 @@ import Playlist from "./pages/playlist/Playlist";
 import AddSong from "./pages/addSong/AddSong";
 import PlaylistAdd from "./pages/playlist/PlaylistAdd";
 import MakeList from "./pages/playlist/MakeList";
+import ReviseList from "./pages/playlist/ReviseList.js";
 
 function App() {
 
@@ -35,6 +36,7 @@ function App() {
                         <Route path="/addSong" element={<AddSong/>} />
                         <Route path="/playlistadd" element={<PlaylistAdd/>} />
                         <Route path="/makeList" element={<MakeList/>} />
+                        <Route path="/reviseList" element={<ReviseList/>} />
                         <Route path="/profile/:id/followers" element={<FollowUser/>}/>                          
                     </Routes>
                 </div>
