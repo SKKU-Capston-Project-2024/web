@@ -12,24 +12,20 @@ import ShareDialog from "./ShareDialog";
 const ReviewDetail = () => {
 
     const {id} = useParams();
-    const reviewId = 23;
-    //const reviewId = id; // 나중에 param으로 받아오기
-
+    const reviewId = id;
 
     const {user, setUser} = useContext(UserContext);
     const [albumId, setAlbumId] = useState(null);
     const [writerId, setWriterId] = useState(null); // 추가: 작성자 id
     const [reviewInfo, setReviewInfo] = useState(null);
-    const [myRating, setMyRating] = useState("-");
     const [myReviewId, setMyReviewId] = useState(null);
+    const [myReview, setMyReview] = useState(false);
     const [isLoading, setIsLoading] = useState(true); // 로딩 상태 추가
     const [reviewWriteModalOpen, setReviewWriteModalOpen] = useState(false);
     const [isLiked, setIsLiked] = useState(false); // 추가: 좋아요 상태 관리
     const [likeCount, setLikeCount] = useState(0);
     const [writerReview, setWriterReview] = useState(null); // 추가: 작성자의 리뷰 목록
-    const [writerReviewPopular, setWriterReviewPopular] = useState(null); // 추가: 작성자의 리뷰 목록
     const [albumReview, setAlbumReview] = useState(null); // 추가: 앨범의 리뷰 목록
-    const [albumReviewPopular, setAlbumReviewPopular] = useState(null); // 추가: 앨범의 리뷰 목록
     const writerReviewToggleRef = useRef("최근");
     const albumReviewToggleRef = useRef("최근");
 
@@ -66,12 +62,16 @@ const ReviewDetail = () => {
                 });
                 if (response.data.userHasReviewed && response.data.albumReviewId !== null) {
                     setMyReviewId(response.data.albumReviewId);
+                    if(response.data.albumReviewId == reviewId){
+                        setMyReview(true);
+                    }
                 }
             } catch (error) {
-                console.error('Failed to fetch my review:', error);
+                console.error('Failed to fetch my review: ', error);
             }
         }
     };
+
 
     const moveToMyReviewOrWrite = () => {
         // console.log(user?.id);
@@ -81,7 +81,36 @@ const ReviewDetail = () => {
             loginDialog.showModal();
             return;
         }
+        if (myReviewId) {
+            navigate(`/reviewDetail/${myReviewId}`);
+        } else {
+            setReviewWriteModalOpen(true);
+        }
+    };
 
+    const reviewEdit = () => {
+        // console.log(user?.id);
+        if (!user?.id) {
+            alert('로그인이 필요합니다.');
+            const loginDialog = document.getElementById("loginModal");
+            loginDialog.showModal();
+            return;
+        }
+        if (myReviewId) {
+            navigate(`/reviewDetail/${myReviewId}`);
+        } else {
+            setReviewWriteModalOpen(true);
+        }
+    };
+
+    const reviewDelete = () => {
+        // console.log(user?.id);
+        if (!user?.id) {
+            alert('로그인이 필요합니다.');
+            const loginDialog = document.getElementById("loginModal");
+            loginDialog.showModal();
+            return;
+        }
         if (myReviewId) {
             navigate(`/reviewDetail/${myReviewId}`);
         } else {
@@ -157,25 +186,11 @@ const ReviewDetail = () => {
         });
     }
 
-    const fetchWriterReviewPopular = async () => {
-        const jwt = localStorage.getItem("accessToken");
-        axios.get(`${process.env.REACT_APP_API_HOST}/user/${writerId}/album/review/popular`, {
-            headers: {
-                Authorization: `Bearer ${jwt}`
-            }
-        }).then((response) => {
-            setWriterReviewPopular(response.data);
-        }).catch((error) => {
-            console.error('Failed to fetch writer popular reviews:', error);
-        });
-    }
-
     const fetchAlbumReview = async () => {
-
         const query = albumReviewToggleRef.current === "최근" ? "recent" : "popular";
 
         const jwt = localStorage.getItem("accessToken");
-        axios.get(`${process.env.REACT_APP_API_HOST}/album/${albumId}/album/review/${query}`, {
+        axios.get(`${process.env.REACT_APP_API_HOST}/album/${albumId}/review/${query}`, {
             headers: {
                 Authorization: `Bearer ${jwt}`
             }
@@ -186,43 +201,27 @@ const ReviewDetail = () => {
         });
     }
 
-    const fetchAlbumReviewPopular = async () => {
-        const jwt = localStorage.getItem("accessToken");
-        axios.get(`${process.env.REACT_APP_API_HOST}/album/${albumId}/album/review/popular`, {
-            headers: {
-                Authorization: `Bearer ${jwt}`
-            }
-        }).then((response) => {
-            setAlbumReviewPopular(response.data);
-        }).catch((error) => {
-            console.error('Failed to fetch album popular reviews:', error);
-        });
+    const moveToAlbumDetail = () => {
+        navigate(`/albumDetail/${albumId}`);
     }
 
-    const fetchAlbumReviews = async () => {
-        const jwt = localStorage.getItem("accessToken");
-        if (jwt && albumId) {
-            try {
-                const response = await axios.get(`${process.env.REACT_APP_API_HOST}/album/${albumId}/review/check`, {
-                    headers: {Authorization: `Bearer ${jwt}`}
-                });
-                if (response.data.userHasReviewed && response.data.albumReviewId !== null) {
-                    setMyReviewId(response.data.albumReviewId);
-                }
-            } catch (error) {
-                console.error('Failed to fetch my review:', error);
-            }
-        }
-    };
-
     useEffect(() => {
-        //setMyReviewId(id);
         fetchReviewInfo();
-        getMyReview();
+        //getMyReview();
         getReviewLiked();
-        fetchWriterReview();
-        fetchAlbumReview();
+        //fetchWriterReview();
+        //fetchAlbumReview();
+    }, [reviewId]);
+
+    useEffect(() => { 
+        fetchWriterReview(); 
     }, [writerId]);
+
+    useEffect(() => { 
+        fetchAlbumReview();
+        getMyReview(); 
+        console.log(myReview, "myReview");
+    }, [albumId, reviewId]);
 
 
     if (isLoading) {
@@ -240,7 +239,7 @@ const ReviewDetail = () => {
                 </div>
                 <div className={styles.reviewCover}>
                     <img src={reviewInfo.album.coverImageUrl ? reviewInfo.album.coverImageUrl : "/albumDefault.jpg"}
-                         alt="Album Art" className={styles.albumArt}/>
+                         alt="Album Art" className={styles.albumArt} onClick={moveToAlbumDetail}/>
                     <div className={styles.reviewInfo}>
                         <div className={styles.albumTitle}>{reviewInfo.album.name ? reviewInfo.album.name : " "}</div>
                         <div
@@ -268,12 +267,26 @@ const ReviewDetail = () => {
                 </div>
                 <ShareDialog dialogId="shareDialog" linkUrl={location.href}/>
             </div>
-            <button className={styles.btnWrite}
-                    onClick={moveToMyReviewOrWrite}>{myReviewId && user ? "나의 리뷰 보기" : "이 앨범 리뷰하기"}</button>
+            <div>
+                {myReview ? (
+                    <div className={styles.btnContainer}>
+                        <button className={styles.btnEdit} onClick={reviewEdit}>수정하기</button>
+                        <button className={styles.btnDelete} onClick={reviewDelete}>삭제하기</button>
+                    </div>
+                   
+                ) : (
+                    <button
+                    className={styles.btnWrite}
+                    onClick={moveToMyReviewOrWrite}
+                    >
+                    {myReviewId && user ? "나의 리뷰 보기" : "이 앨범 리뷰하기"}
+                    </button>
+                )}
+            </div>
             <section className={styles.subSection}>
                 <div className={styles.sectionTitleContainer}>
                     <div className={styles.sectionTitle}>{reviewInfo.writer.username ? reviewInfo.writer.username : " "}의
-                        인생앨범 엿보기 👀
+                        앨범리뷰 보기 👀
                     </div>
                     <ToggleFilter menu={["최근", "인기"]} onFocusChange={fetchWriterReview}
                                   tabRef={writerReviewToggleRef}/>
@@ -283,14 +296,16 @@ const ReviewDetail = () => {
                         writerReview.map((review, index) => (
                             <ReviewPreview key={index} content={review}/>
                         )) :
-                        " "}
+                        "작성자의 다른 리뷰가 없습니다. 🤔 "}
                 </div>
             </section>
 
             <section className={styles.subSection}>
                 <div className={styles.sectionTitleContainer}>
-                    <div className={styles.sectionTitle}>{reviewInfo.album.name ? reviewInfo.album.name : " "}의 다른 리뷰
-                        🔍
+                    <div className={styles.sectionTitle}>{reviewInfo.album.name ? 
+                        (reviewInfo.album.name.length > 25 ? 
+                            `${reviewInfo.album.name.slice(0, 25)}...` : 
+                            reviewInfo.album.name) : " "}의 다른 리뷰🔍
                     </div>
                     <ToggleFilter menu={["최근", "인기"]} tabRef={albumReviewToggleRef} onFocusChange={fetchAlbumReview}/>
                 </div>
@@ -299,7 +314,7 @@ const ReviewDetail = () => {
                         albumReview.map((review, index) => (
                             <ReviewPreview key={index} content={review}/>
                         )) :
-                        " "}
+                        "앨범의 다른 리뷰가 없습니다. 🤔"}
                 </div>
             </section>
         </>

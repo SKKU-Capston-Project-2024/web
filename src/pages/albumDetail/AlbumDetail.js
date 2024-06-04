@@ -7,6 +7,7 @@ import ReviewPreview from "../../components/reviewPreview/ReviewPreview";
 import PlaylistPreview from "../../components/playlistPreview/PlaylistPreview";
 import ToggleFilter from "../../components/toggleFilter/ToggleFilter";
 import TrackReview from "../../components/trackReview/TrackReview";
+import TrackComment from "../../components/trackComment/TrackComment";
 import ShareDialog from "./ShareDialog";
 import {UserContext} from "../../context/UserContext";
 
@@ -14,8 +15,6 @@ const MainPage = (props) => {
 
     const {tracks, reviews, comments} = props;
 
-    const onContainerClick = () => {
-    };
 
     return (
         <>
@@ -40,14 +39,13 @@ const MainPage = (props) => {
             </div>
             {reviews?.length > 0 ?
                     <div className="verticalScroll">
-                        {reviews?.map((review) => {
+                        {reviews?.map((review, index) => {
                             return (<ReviewPreview
-                                key={review.id}
+                                key={index}
                                 content={review}
                             />)
                         })
                         }
-                        <ReviewPreview/>
                     </div>
                     : <div> 아직 작성된 리뷰가 없습니다. 첫 리뷰를 남겨주세요</div>
                 }
@@ -60,62 +58,103 @@ const MainPage = (props) => {
 
 const ReviewPage = (props) => {
 
-    const {reviews, comments} = props;
+    const albumId = props.albumId;
 
-    const onContainerClick = () => {
-    };
+    const [albumReview, setAlbumReview] = useState(null);
+    const [trackComment, setTrackComment] = useState(null);
+    const albumReviewToggleRef = useRef("최근");
+    const trackCommentToggleRef = useRef("최근");
+
+    const fetchAlbumReview = async () => {
+        const jwt = localStorage.getItem("accessToken");
+
+        const query = albumReviewToggleRef.current === "최근" ? "recent" : "popular";
+        axios.get(`${process.env.REACT_APP_API_HOST}/album/${albumId}/review/${query}`, {
+            headers: {
+                Authorization: `Bearer ${jwt}`
+            }
+        }).then((response) => {
+            setAlbumReview(response.data);
+        }).catch((error) => {
+            console.error('Failed to fetch album reviews', error);
+        });
+    }
+
+    const fetchTrackComment = async () => {
+        const jwt = localStorage.getItem("accessToken");
+
+        const query = trackCommentToggleRef.current === "최근" ? "recent" : "popular";
+        axios.get(`${process.env.REACT_APP_API_HOST}/album/${albumId}/song/comment/${query}`, {
+            headers: {
+                Authorization: `Bearer ${jwt}`
+            }
+        }).then((response) => {
+            setTrackComment(response.data);
+        }).catch((error) => {
+            console.error('Failed to fetch track comments', error);
+        });
+    }
+
+    useEffect(() => {
+        fetchAlbumReview();
+        fetchTrackComment();
+    }, [albumId]);
+
+
     return (
-        <div className="reviewPage">
-            <section className={styles.homeSection}>
-                <div className={styles.sectionTitle}>
-                    <h2>앨범리뷰</h2>
-                    <div className={styles.toggleContainer}>
-                        <ToggleFilter menu={["최근", "인기"]}/>
-                    </div>
-                </div>
-                {reviews?.length > 0 ?
+        <>
+        <section className={styles.subSection}>
+            <div className={styles.sectionTitleContainer}>                    
+                <div className={styles.sectionTitle}>앨범 리뷰</div>
+                <ToggleFilter menu={["최근", "인기"]} onFocusChange={fetchAlbumReview}
+                                  tabRef={albumReviewToggleRef}/>
+            </div>
+            {albumReview?.length > 0 ?
                     <div className="verticalScroll">
-                        {reviews?.map((review) => {
+                        {albumReview?.map((review, index) => {
                             return (<ReviewPreview
-                                key={review.id}
+                                key={index}
                                 content={review}
-                            />)
-                        })}
-                    </div>
-                    : <div> 아직 작성된 리뷰가 없습니다. 첫 리뷰를 남겨주세요</div>
-                }
-                <div className={styles.sectionTitle}>
-                    <h2>수록곡 리뷰</h2>
-                    <div className={styles.toggleContainer}>
-                        <ToggleFilter menu={["최근", "인기"]}/>
-                    </div>
-                </div>
-                {comments?.length > 0 ?
-                    <div className="verticalScroll">
-                        {comments?.map((comment) => {
-                            return (<TrackReview
-                                key={comment.id}
-                                content={comment}
                             />)
                         })
                         }
                     </div>
                     : <div> 아직 작성된 리뷰가 없습니다. 첫 리뷰를 남겨주세요</div>
                 }
-            </section>
-        </div>
+        </section>
+
+        <section className={styles.subSection}>
+            <div className={styles.sectionTitleContainer}>                    
+                <div className={styles.sectionTitle}>한줄평</div>
+                <ToggleFilter menu={["최근", "인기"]} onFocusChange={fetchTrackComment}
+                                  tabRef={trackCommentToggleRef}/>
+            </div>
+            {trackComment?.length > 0 ?
+                    <div className="verticalScroll">
+                        {trackComment?.map((comment, index) => {
+                            return (<TrackComment
+                                key={index}
+                                content={comment}
+                            />)
+                        })
+                        }
+                    </div>
+                    : <div> 아직 작성된 한줄평이 없습니다. 첫 한줄평을 남겨주세요</div>
+                }
+        </section>
+        
+        </>
+        
     );
 };
 
 
 const ListPage = () => {
     return (
-        <section className={styles.homeSection}>
-            <div className={styles.sectionTitle}>
-                <h2>플레이리스트</h2>
-                <div className={styles.toggleContainer}>
-                    <ToggleFilter menu={["최근", "인기"]}/>
-                </div>
+        <section className={styles.subSection}>
+            <div className={styles.sectionTitleContainer}>
+                <div className={styles.sectionTitle}>플레이리스트</div>
+                <ToggleFilter menu={["최근", "인기"]}/>
             </div>
             <div className="verticalScroll">
                 <PlaylistPreview
@@ -132,6 +171,7 @@ const ListPage = () => {
         </section>
     );
 };
+
 const TrackItem = (props) => {
 
     const {track} = props;
@@ -149,7 +189,7 @@ const TrackItem = (props) => {
             <div className={styles.trackDuration}>{track.length}</div>
             <div className={styles.trackRating}>
                 <img loading="lazy" src="/YellowStar.svg" alt="⭐️" className={styles.starIcon}/>
-                {track.rating ? track.rating.toFixed(1) : "?"}
+                {track.rating ? (track.rating/2).toFixed(1) : "?"}
                 <div style={{marginLeft: "5px", color: "#A0A1A4", fontSize: "12px", fontWeight: "400"}}> / 5</div>
             </div>
         </div>
@@ -161,27 +201,30 @@ const TrackItem = (props) => {
 // 앨범 상세페이지 컴포넌트
 const AlbumDetailsPage = (props) => {
 
+    console.log(props.albumId, "props.albumId");
+
     const {user, setUser} = useContext(UserContext);
 
     const [reviewWriteModalOpen, setReviewWriteModalOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(true); // 로딩 상태 추가
     const reviewWriteModalBackground = useRef();
     const [albumInfo, setAlbumInfo] = useState({});
-    const [myRating, setMyRating] = useState("-");
+    const [myRating, setMyRating] = useState(null);
     const [myReviewId, setMyReviewId] = useState(null);
     const [isLiked, setIsLiked] = useState(false);
     const [likeCount, setLikeCount] = useState(0);
     const [reviewList, setReviewList] = useState([]);
     const [commentList, setCommentList] = useState([]);
-    const navigate = useNavigate();
-
-    // 곡 추가 페이지로 이동 -> 탑스터로 수정 필요
-    const navigateToPlaylistAdd = () => {
-        navigate('/playlistadd');
-    };
-
 
     const addTopster = () => {
+        console.log(user.id);
+        if (!user?.id) {
+            alert('로그인이 필요합니다.');
+            const loginDialog = document.getElementById("loginModal");
+            loginDialog.showModal();
+            return;
+        }
+
         const accessToken = localStorage.getItem('accessToken');
         axios.post(`${process.env.REACT_APP_API_HOST}/user/profile/topster/album`, {
             albumIds: [props.albumId]
@@ -193,25 +236,11 @@ const AlbumDetailsPage = (props) => {
         }).then((response) => {
             alert('앨범이 탑스터에 추가되었습니다.');
         }).catch((error) => {
-            alert('저장 가능한 탑스터 개수를 초과했습니다. 탑스터를 정리해주세요.')
+            alert('저장 가능한 탑스터 개수를 초과했습니다. 탑스터를 정리해주세요.');
         });
+
     }
-
-
-    const getRecentReviews = () => {
-        const jwt = localStorage.getItem("accessToken");
-        const headers = {}
-        if (jwt !== null) {
-            headers.Authorization = `Bearer ${jwt}`;
-        }
-        axios.get(`${process.env.REACT_APP_API_HOST}/album/${props.albumId}/review/recent`, {
-            headers: headers
-        }).then((response) => {
-            setReviewList(response.data);
-        }).catch((error) => {
-        });
-    }
-
+    
 
     const fetchAlbumInfo = async () => {
         try {
@@ -231,18 +260,34 @@ const AlbumDetailsPage = (props) => {
         const dialog = document.getElementById("shareDialog");
         dialog.showModal();
 
+    };
+
+    const getTopReviews = () => {
+        const jwt = localStorage.getItem("accessToken");
+        const headers = {}
+        if (jwt !== null) {
+            headers.Authorization = `Bearer ${jwt}`;
+        }
+        axios.get(`${process.env.REACT_APP_API_HOST}/album/${props.albumId}/review/popular`, {
+            headers: headers
+        }).then((response) => {
+            setReviewList(response.data);
+        }).catch((error) => {
+            console.error('Failed to fetch popular album reviews', error);
+        });
     }
 
 
-    const getComment = async () => {
+    const getTopComments = async () => {
         const accessToken = localStorage.getItem('accessToken');
-        axios.get(`${process.env.REACT_APP_API_HOST}/album/${props.albumId}/song/comment/recent`, {
+        axios.get(`${process.env.REACT_APP_API_HOST}/album/${props.albumId}/song/comment/popular`, {
             headers: {
                 Authorization: `Bearer ${accessToken}`
             }
         }).then((response) => {
             setCommentList(response.data);
         }).catch((error) => {
+            console.error('Failed to fetch popular track comments', error);
         });
     }
 
@@ -257,25 +302,27 @@ const AlbumDetailsPage = (props) => {
             }
         }).then((response) => {
             if (response.data.userHasReviewed && response.data.albumReviewId !== null) {
-                setMyReviewId(response.data.albumReviewId)
+                setMyReviewId(response.data.albumReviewId);
+                getMyRating(response.data.albumReviewId);
             }
         }).catch((error) => {
             console.error('Failed to fetch my review:', error);
         });
     }
 
-    const getMyRating = async () => {
+    const getMyRating = async (reviewId) => {
         const jwt = localStorage.getItem("accessToken");
         if (jwt === null) {
             return;
         }
-        axios.get(`${process.env.REACT_APP_API_HOST}/album/${props.albumId}/rating`, {
+        axios.get(`${process.env.REACT_APP_API_HOST}/album/review/${reviewId}`, {
             headers: {
                 Authorization: `Bearer ${jwt}`
             }
         }).then((response) => {
             if (response.data.rating !== null) {
-                setMyRating(response.data.rating)
+                setMyRating(response.data.review.rating);
+                console.log(myRating, "my rating");
             }
         }).catch((error) => {
             console.error('Failed to fetch my review:', error);
@@ -291,7 +338,7 @@ const AlbumDetailsPage = (props) => {
             return;
         }
         if (myReviewId) {
-            window.location.href = `/album/review/${myReviewId}`;
+            window.location.href = `/reviewDetail/${myReviewId}`;
         } else {
             setReviewWriteModalOpen(true);
         }
@@ -299,7 +346,6 @@ const AlbumDetailsPage = (props) => {
     }
 
     const getAlbumLiked = async () => {
-        console.log(user.id);
         const jwt = localStorage.getItem("accessToken");
         axios.get(`${process.env.REACT_APP_API_HOST}/album/${props.albumId}/like/status`, {
             headers: {
@@ -360,12 +406,16 @@ const AlbumDetailsPage = (props) => {
     useEffect(() => {
         fetchAlbumInfo();
         getMyReview();
-        getMyRating();
-        getRecentReviews();
+        getTopReviews();
         getAlbumLiked();
-        getComment();
-
+        getTopComments();
     }, [props.albumId]);
+
+    /*
+    useEffect(() => {
+        getMyReview();
+    }, [user]);
+    */
 
     if (isLoading) {
         return <div>Loading album information...</div>; // 로딩 상태일 때 로딩 메시지 표시
@@ -391,12 +441,12 @@ const AlbumDetailsPage = (props) => {
                     </div>
                     <div className={styles.ratingItem}>
                         <div className={styles.value}>
-                            {albumInfo.averageRating ? albumInfo.averageRating.toFixed(1) : 0} / 5.0
+                            {albumInfo.averageRating ? (albumInfo.averageRating/2).toFixed(1) : 0} / 5.0
                         </div>
                         <div className={styles.label}>전체 평가</div>
                     </div>
                     <div className={styles.ratingItem}>
-                        <div className={styles.value}>{`${myRating} / 5.0`}</div>
+                        <div className={styles.value}>{myRating ? (myRating/2).toFixed(1) : "-"} / 5.0</div>
                         <div className={styles.label}>내 평가</div>
                     </div>
                 </div>
@@ -430,7 +480,7 @@ const AlbumDetailsPage = (props) => {
             </div>
             <ShareDialog dialogId="shareDialog" linkUrl={location.href}/>
             <NavigationBar
-                data={{albumInfo, reviewList, commentList}}
+                albumId={props.albumId} data={{albumInfo, reviewList, commentList}}
             /> {/* This remains outside the new container */}
             {reviewWriteModalOpen &&
                 <AlbumReviewWrite albumId={props.albumId}
@@ -447,10 +497,7 @@ const AlbumDetailsPage = (props) => {
 const NavigationBar = (props) => {
     const [tab, setTab] = useState('main');
 
-    //console.log(props.data, "fff")
-
-    const {data} = props;
-    const {albumInfo, reviewList, commentList} = data;
+    const {albumInfo, reviewList, commentList} = props.data;
 
     return (
         <div>
@@ -471,8 +518,8 @@ const NavigationBar = (props) => {
             <div>
                 {tab === 'main' &&
                     <MainPage tracks={albumInfo?.albumTrackList} reviews={reviewList} comments={commentList}/>}
-                {tab === 'review' && <ReviewPage reviews={reviewList} comments={commentList}/>}
-                {tab === 'list' && <ListPage/>}
+                {tab === 'review' && <ReviewPage albumId={props.albumId}/>}
+                {tab === 'list' && <ListPage albumId={props.albumId}/>}
             </div>
         </div>
     );
